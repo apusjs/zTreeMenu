@@ -18,6 +18,9 @@
       this.treeMenuContent = null
       this.Defaults = {
         theme: 'ztree',
+        language:{
+          sEmptyTable: '对不起，查询不到相关数据'
+        },
         style: {},
         selectCallback: function () {
         },
@@ -118,7 +121,7 @@
             that.treeRendering(nodeList)
             that.$element.data('iSSearch', true)
           } else {
-            $("#tree-list-" + that.treeId).html('<li class="no-results">没有匹配结果 "<span>' + $inputVal + '</span>"</li>')
+            $("#tree-list-" + that.treeId).html('<li class="no-results">' + that.options.language.sEmptyTable + '</li>')
           }
         }
         return this
@@ -350,7 +353,7 @@
     // data配置方法
     var zTreeMenuDataApi = function ($el) {
 
-      var dataList = ['setting', 'source', 'console', 'ajaxUrl', 'theme', 'style'];
+      var dataList = ['setting', 'source', 'console', 'ajaxUrl', 'theme', 'style', 'language'];
 
       // 获取data配置对象
       var getData = function ($el, dL) {
@@ -389,6 +392,9 @@
         if (oldList.style) {
           oldList.style = toObject('style', oldList.style);
         }
+       if (oldList.language) {
+          oldList.language = toObject('language', oldList.language);
+       }
         if (typeof oldList.theme !== 'string') delete oldList.theme;
         if (typeof oldList.console !== 'number') delete oldList.console;
         return oldList;
@@ -397,7 +403,6 @@
       // 处理页面上的data-init树初始化对象
 
       var options = dealData(getData($el, dataList));
-
       // 调用树初始化方法
       $el.zTreeMenu($.extend(true, {}, options.ajaxUrl!==undefined ? {
         setting:{async: {
