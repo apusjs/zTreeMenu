@@ -191,7 +191,7 @@
         if (that.treeMenuContent.is(':visible')) return this
         positioning(cityOffset)
         that.treeMenuContent.slideDown('fast', function () {
-          $(document).on("mousedown", that.closeFn = function () {
+          $(document).on("mousedown", that.closeFn = function (event) {
             if ($(event.target).parents('.treeMenuContent').length < 1 && !($(event.target).data('treeId') && $(event.target).data('treeId') === that.treeId)) {
               that.close.call(that)
             }
