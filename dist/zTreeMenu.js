@@ -175,39 +175,54 @@
         this.options.selectCallback.call(this, this.$element.data('data'))
       },
       // 打开菜单
-      open: function () {
-        var that = this
-        var cityOffset = that.$element.offset();
-        var elOuterHeight = that.$element.outerHeight()
-
-        var positioning = function (offset) {
-          offset = offset || cityOffset
-          that.treeMenuContent.css({
-            left: offset.left + "px",
-            top: offset.top + elOuterHeight + "px"
-          })
-        }
-
-        if (that.treeMenuContent.is(':visible')) return this
-        positioning(cityOffset)
-        that.treeMenuContent.slideDown('fast', function () {
-          $(document).on("mousedown", that.closeFn = function (event) {
-            if ($(event.target).parents('.treeMenuContent').length < 1 && !($(event.target).data('treeId') && $(event.target).data('treeId') === that.treeId)) {
-              that.close.call(that)
+        open: function () {
+            var that = this
+            var cityOffset = that.$element.offset()
+            var positioning = function (offset) {
+                offset = offset || cityOffset
+                var windowsHeight = document.documentElement.clientHeight
+                var treeMenuContentHeight = that.treeMenuContent.height()
+                var elementHeight = that.$element.outerHeight()
+                var beginCss = {
+                    left: offset.left,
+                    minWidth: that.$element.outerWidth(),
+                    height: 0
+                }
+                var endCss = {
+                    'height': that.options.style.height ? that.options.style.height : treeMenuContentHeight
+                }
+                if ((offset.top + treeMenuContentHeight) > windowsHeight && offset.top > treeMenuContentHeight) {
+                    beginCss.bottom = windowsHeight - that.$element.offset().top
+                    beginCss.maxHeight = windowsHeight - elementHeight - 20
+                } else {
+                    beginCss.top = offset.top + elementHeight
+                    beginCss.maxHeight = windowsHeight - (offset.top + elementHeight) - 20
+                }
+                that.treeMenuContent.css(beginCss)
+                return endCss
             }
-          });
-          that.scrollbar.call(that)
-          that.$element.trigger('zTreeMenu:open')
-        });
-        that.positioningSetInterval = window.setInterval(function () {
-          var tempCityOffset = that.$element.offset();
-          if (cityOffset.left !== tempCityOffset.left || cityOffset.top !== tempCityOffset.top) {
-            cityOffset = tempCityOffset
-            positioning(tempCityOffset)
-          }
-        }, 20)
-        return this
-      },
+            if (that.treeMenuContent.is(':visible')) return this
+            that.treeMenuContent.show().animate(positioning(cityOffset), function () {
+                if (!that.options.style.height) {
+                    that.treeMenuContent.css({'height': 'auto'})
+                }
+                $(document).on("mousedown", that.closeFn = function (event) {
+                    if ($(event.target).parents('.treeMenuContent').length < 1 && !($(event.target).data('treeId') && $(event.target).data('treeId') === that.treeId)) {
+                        that.close.call(that)
+                    }
+                });
+                that.scrollbar.call(that)
+                that.$element.trigger('zTreeMenu:open')
+            })
+            that.positioningSetInterval = window.setInterval(function () {
+                var tempCityOffset = that.$element.offset();
+                if (cityOffset.left !== tempCityOffset.left || cityOffset.top !== tempCityOffset.top) {
+                    cityOffset = tempCityOffset
+                    positioning(tempCityOffset)
+                }
+            }, 20)
+            return this
+        },
       // 关闭菜单
       close: function () {
         var that = this
