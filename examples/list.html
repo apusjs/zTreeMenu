@@ -13,9 +13,6 @@
 <div class="app-demo1">
 
 </div>
-<div class="app-demo2">
-
-</div>
 <script>
   /**
    *
@@ -83,8 +80,12 @@
   ];
 
   $('.app-demo1,.app-demo2').zTreeList({
-    data: data,
+    // data: data,
     setting: {
+      async: {
+        enable: true,
+        url: "data.json"
+      },
       callback: {
         onClick: function (e, treeId, treeNode) {
           console.log(e, treeId, treeNode)
