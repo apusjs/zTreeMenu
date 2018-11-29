@@ -18,7 +18,7 @@
       this.treeMenuContent = null
       this.Defaults = {
         theme: 'ztree',
-        language:{
+        language: {
           sEmptyTable: '对不起，查询不到相关数据'
         },
         style: {},
@@ -56,13 +56,35 @@
         return $.extend(true, {}, this.options.setting, {
           callback: {
             /**
+             *  用于捕获 checkbox / radio 被勾选 或 取消勾选的事件回调函数
+             * @param e
+             * @param treeId
+             * @param treeNode
+             */
+            onCheck: function (e, treeId, treeNode) {
+              that.onCheck(e, treeId, treeNode)
+              if (that.options.setting && that.options.setting.callback && that.options.setting.callback.onCheck && typeof that.options.setting.callback.onCheck == 'function') {
+                that.options.setting.callback.onCheck(that, e, treeId, treeNode)
+              }
+            },
+            beforeClick: function (treeId, treeNode) {
+              if (that.options.setting && that.options.setting.check && that.options.setting.check.enable) {
+                that.beforeClick(treeId, treeNode)
+              }
+              if (that.options.setting && that.options.setting.callback && that.options.setting.callback.beforeClick && typeof that.options.setting.callback.beforeClick == 'function') {
+                that.options.setting.callback.beforeClick(treeId, treeNode)
+              }
+            },
+            /**
              *  拦截节点被点击的事件回调函数
              * @param e
              * @param treeId
              * @param treeNode
              */
             onClick: function (e, treeId, treeNode) {
-              that.onClick(e, treeId, treeNode)
+              if (!(that.options.setting && that.options.setting.check && that.options.setting.check.enable)) {
+                that.onClick(e, treeId, treeNode)
+              }
               if (that.options.setting && that.options.setting.callback && that.options.setting.callback.onClick && typeof that.options.setting.callback.onClick == 'function') {
                 that.options.setting.callback.onClick(that, e, treeId, treeNode)
               }
@@ -84,7 +106,39 @@
         })
       },
       /**
-       * 节点选中
+       * 用于捕获 checkbox / radio 被勾选 或 取消勾选的事件回调函数
+       * @param treeId
+       * @param treeNode
+       */
+      onCheck: function (e, treeId, treeNode) {
+        var that = this
+        var zTree = $.fn.zTree.getZTreeObj(e.currentTarget.id)
+        var nodes = zTree.getCheckedNodes()
+        var v = '';
+        nodes.sort(function compare(a, b) {
+          return a.id - b.id;
+        });
+        for (var i = 0, l = nodes.length; i < l; i++) {
+          v += nodes[i].name + ","
+        }
+        if (v.length > 0) v = v.substring(0, v.length - 1)
+        that.$element.val(v)
+          .data({'data': nodes})
+          .trigger('change')
+        return this
+      },
+      /**
+       * 用于捕获单击节点之前的事件回调函数，并且根据返回值确定是否允许单击操作
+       * @param treeId
+       * @param treeNode
+       */
+      beforeClick: function (treeId, treeNode) {
+        var zTree = $.fn.zTree.getZTreeObj(treeId);
+        zTree.checkNode(treeNode, !treeNode.checked, null, true);
+        return false;
+      },
+      /**
+       * 节点点击
        * @param e
        * @param treeId
        * @param treeNode
@@ -156,7 +210,7 @@
             .trigger('zTreeMenu:selecting')
             .data('zTreeMenu')
             .selectNode.call(this)
-        } else if ($inputData === undefined || ($inputData && $inputData[0].level >= 0)) {
+        } else if ($inputData === undefined || ($inputData && $inputData.length >= 0)) {
           that.log('用户选择')
             .callback.call(this)
         } else if (!that.$element.data('iSSearch') && $inputData && !$inputData[0].level) {
@@ -175,54 +229,54 @@
         this.options.selectCallback.call(this, this.$element.data('data'))
       },
       // 打开菜单
-        open: function () {
-            var that = this
-            var cityOffset = that.$element.offset()
-            var positioning = function (offset) {
-                offset = offset || cityOffset
-                var windowsHeight = document.documentElement.clientHeight
-                var treeMenuContentHeight = that.treeMenuContent.height()
-                var elementHeight = that.$element.outerHeight()
-                var beginCss = {
-                    left: offset.left,
-                    minWidth: that.$element.outerWidth(),
-                    height: 0
-                }
-                var endCss = {
-                    'height': that.options.style.height ? that.options.style.height : treeMenuContentHeight
-                }
-                if ((offset.top + treeMenuContentHeight) > windowsHeight && offset.top > treeMenuContentHeight) {
-                    beginCss.bottom = windowsHeight - that.$element.offset().top
-                    beginCss.maxHeight = windowsHeight - elementHeight - 20
-                } else {
-                    beginCss.top = offset.top + elementHeight
-                    beginCss.maxHeight = windowsHeight - (offset.top + elementHeight) - 20
-                }
-                that.treeMenuContent.css(beginCss)
-                return endCss
+      open: function () {
+        var that = this
+        var cityOffset = that.$element.offset()
+        var positioning = function (offset) {
+          offset = offset || cityOffset
+          var windowsHeight = document.documentElement.clientHeight
+          var treeMenuContentHeight = that.treeMenuContent.height()
+          var elementHeight = that.$element.outerHeight()
+          var beginCss = {
+            left: offset.left,
+            minWidth: that.$element.outerWidth()
+            // height: 0
+          }
+          var endCss = {
+            'height': that.options.style.height ? that.options.style.height : treeMenuContentHeight
+          }
+          if ((offset.top + treeMenuContentHeight) > windowsHeight && offset.top > treeMenuContentHeight) {
+            beginCss.bottom = windowsHeight - that.$element.offset().top
+            beginCss.maxHeight = windowsHeight - elementHeight - 20
+          } else {
+            beginCss.top = offset.top + elementHeight
+            beginCss.maxHeight = windowsHeight - (offset.top + elementHeight) - 20
+          }
+          that.treeMenuContent.css(beginCss)
+          return endCss
+        }
+        if (that.treeMenuContent.is(':visible')) return this
+        that.treeMenuContent.show().animate(positioning(cityOffset), function () {
+          if (!that.options.style.height) {
+            that.treeMenuContent.css({'height': 'auto'})
+          }
+          $(document).on("mousedown", that.closeFn = function (event) {
+            if ($(event.target).parents('.treeMenuContent').length < 1 && !($(event.target).data('treeId') && $(event.target).data('treeId') === that.treeId)) {
+              that.close.call(that)
             }
-            if (that.treeMenuContent.is(':visible')) return this
-            that.treeMenuContent.show().animate(positioning(cityOffset), function () {
-                if (!that.options.style.height) {
-                    that.treeMenuContent.css({'height': 'auto'})
-                }
-                $(document).on("mousedown", that.closeFn = function (event) {
-                    if ($(event.target).parents('.treeMenuContent').length < 1 && !($(event.target).data('treeId') && $(event.target).data('treeId') === that.treeId)) {
-                        that.close.call(that)
-                    }
-                });
-                that.scrollbar.call(that)
-                that.$element.trigger('zTreeMenu:open')
-            })
-            that.positioningSetInterval = window.setInterval(function () {
-                var tempCityOffset = that.$element.offset();
-                if (cityOffset.left !== tempCityOffset.left || cityOffset.top !== tempCityOffset.top) {
-                    cityOffset = tempCityOffset
-                    positioning(tempCityOffset)
-                }
-            }, 20)
-            return this
-        },
+          });
+          that.scrollbar.call(that)
+          that.$element.trigger('zTreeMenu:open')
+        })
+        that.positioningSetInterval = window.setInterval(function () {
+          var tempCityOffset = that.$element.offset();
+          if (cityOffset.left !== tempCityOffset.left || cityOffset.top !== tempCityOffset.top) {
+            cityOffset = tempCityOffset
+            positioning(tempCityOffset)
+          }
+        }, 20)
+        return this
+      },
       // 关闭菜单
       close: function () {
         var that = this
@@ -279,7 +333,9 @@
           console.warn('未引用滚动扩展 perfectScrollbar ')
           return this
         }
-        window.setTimeout(function(){that.treeMenuContent.perfectScrollbar().perfectScrollbar('update')}, 200)
+        window.setTimeout(function () {
+          that.treeMenuContent.perfectScrollbar().perfectScrollbar('update')
+        }, 200)
         return this
       },
       // 树初始化
@@ -407,9 +463,9 @@
         if (oldList.style) {
           oldList.style = toObject('style', oldList.style);
         }
-       if (oldList.language) {
+        if (oldList.language) {
           oldList.language = toObject('language', oldList.language);
-       }
+        }
         if (typeof oldList.theme !== 'string') delete oldList.theme;
         if (typeof oldList.console !== 'number') delete oldList.console;
         return oldList;
@@ -419,12 +475,14 @@
 
       var options = dealData(getData($el, dataList));
       // 调用树初始化方法
-      $el.zTreeMenu($.extend(true, {}, options.ajaxUrl!==undefined ? {
-        setting:{async: {
-          enable: true,
-          url: options.ajaxUrl
+      $el.zTreeMenu($.extend(true, {}, options.ajaxUrl !== undefined ? {
+        setting: {
+          async: {
+            enable: true,
+            url: options.ajaxUrl
+          }
         }
-        }}:{}, options));
+      } : {}, options));
 
       $el.data('init.ext.zTreeMenu.data-api', true);
     };
@@ -445,7 +503,7 @@
       $('[data-init="zTreeMenu"]').trigger("init.ext.zTreeMenu.data-api");
     });
 
-}; // /factory
+  }; // /factory
 
 // Define as an AMD module if possible
   if (typeof define === 'function' && define.amd) {
