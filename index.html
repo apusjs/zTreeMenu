@@ -1,62 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/ztree@3.5.24/css/zTreeStyle/zTreeStyle.css" type="text/css">
 <script src="https://unpkg.com/ztree@3.5.24/js/jquery.ztree.all.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/perfect-scrollbar@0.8.1/dist/css/perfect-scrollbar.min.css" type="text/css">
+<link rel="stylesheet" href="https://unpkg.com/perfect-scrollbar@0.8.1/dist/css/perfect-scrollbar.min.css"
+      type="text/css">
 <script src="https://unpkg.com/perfect-scrollbar@0.8.1/dist/js/perfect-scrollbar.jquery.min.js"></script>
 
 <link rel="stylesheet" href="./dist/zTreeMenu.css" type="text/css">
 <script src="./dist/zTreeMenu.js"></script>
 <body>
 <div class="app-demo1" style="width: 300px;float: left; ">
-  <button class="app-open">open</button>
-  <button class="app-update">update</button>
-  <button class="app-close">close</button>
-  <button class="app-data">data</button>
-  <button class="app-destroy">destroy</button>
-  <button class="app-init">init</button>
-  <button class="app-newval">new val</button>
-  <button class="app-nullval">null val</button>
-  <button class="app-getTreeObj">getTreeObj</button>
+    <button class="app-open">open</button>
+    <button class="app-update">update</button>
+    <button class="app-close">close</button>
+    <button class="app-data">data</button>
+    <button class="app-destroy">destroy</button>
+    <button class="app-init">init</button>
+    <button class="app-newval">new val</button>
+    <button class="app-nullval">null val</button>
+    <button class="app-getTreeObj">getTreeObj</button>
 
-  <input class="zTreeMenu" type="text" value="" style="width:200px;" fu="a.a()"/>
+    <input class="zTreeMenu" type="text" value="" style="width:200px;" fu="a.a()"/>
 </div>
 
 <div class="app-demo2" style="width: 200px; float: left;">
-  <button class="app-open">open</button>
-  <button class="app-update">update</button>
-  <button class="app-close">close</button>
-  <button class="app-data">data</button>
-  <button class="app-destroy">destroy</button>
-  <button class="app-init">init</button>
-  <button class="app-newval">new val</button>
-  <button class="app-nullval">null val</button>
-  <button class="app-getTreeObj">getTreeObj</button>
+    <button class="app-open">open</button>
+    <button class="app-update">update</button>
+    <button class="app-close">close</button>
+    <button class="app-data">data</button>
+    <button class="app-destroy">destroy</button>
+    <button class="app-init">init</button>
+    <button class="app-newval">new val</button>
+    <button class="app-nullval">null val</button>
+    <button class="app-getTreeObj">getTreeObj</button>
 
-  <input class="zTreeMenu" type="text" value="" style="width:200px;"/>
+    <input class="zTreeMenu" type="text" value="" style="width:200px;"/>
 
 
 </div>
 
 <div class="app-demo3" style="width: 300px;float: left; ">
-  <button class="app-open">open</button>
-  <button class="app-update">update</button>
-  <button class="app-close">close</button>
-  <button class="app-data">data</button>
-  <button class="app-destroy">destroy</button>
-  <button class="app-init">init</button>
-  <button class="app-newval">new val</button>
-  <button class="app-nullval">null val</button>
-  <button class="app-getTreeObj">getTreeObj</button>
+    <button class="app-open">open</button>
+    <button class="app-update">update</button>
+    <button class="app-close">close</button>
+    <button class="app-data">data</button>
+    <button class="app-destroy">destroy</button>
+    <button class="app-init">init</button>
+    <button class="app-newval">new val</button>
+    <button class="app-nullval">null val</button>
+    <button class="app-getTreeObj">getTreeObj</button>
 
-  <input class="zTreeMenu" type="text" value="" style="width:200px;" fu="a.a()"/>
+    <input class="zTreeMenu" type="text" value="" style="width:200px;" fu="a.a()"/>
 </div>
-<input data-init="zTreeMenu" data-ajax-url="data.json" data-language="{'sEmptyTable': '使用新账号'}" type="text"  style="width:200px;"/>
+<input data-init="zTreeMenu" data-source="[
+        {
+            'name': '父节点1 - 展开', 'open': true,
+            'children': [
+                {
+                    'name': '父节点11 - 折叠',
+                    'children': [
+                        {'name': '叶子节点111', 'id': 111},
+                        {'name': '叶子节点112', 'id': 112},
+                        {'name': '叶子节点113', 'id': 113},
+                        {'name': '叶子节点114', 'id': 114}
+                    ]
+                },
+                {
+                    'name': '父节点12 - 折叠',
+                    'children': [
+                        {'name': '叶子节点121', 'id': 121},
+                        {'name': '叶子节点122', 'id': 122},
+                        {'name': '叶子节点123', 'id': 123},
+                        {'name': '叶子节点124', 'id': 124}
+                    ]
+                },
+                {'name': '父节点13 - 没有子节点', 'isParent': true}
+            ]
+        },
+        {
+            'name': '父节点2 - 折叠',
+            'children': [
+                {
+                    'name': '父节点21 - 展开', 'open': true,
+                    'children': [
+                        {'name': '叶子节点211', 'id': 211},
+                        {'name': '叶子节点212', 'id': 212},
+                        {'name': '叶子节点213', 'id': 213},
+                        {'name': '叶子节点214', 'id': 214}
+                    ]
+                },
+                {
+                    'name': '父节点22 - 折叠',
+                    'children': [
+                        {'name': '叶子节点221', 'id': 221},
+                        {'name': '叶子节点222', 'id': 222},
+                        {'name': '叶子节点223', 'id': 223},
+                        {'name': '叶子节点224', 'id': 224}
+                    ]
+                },
+                {
+                    'name': '父节点23 - 折叠',
+                    'children': [
+                        {'name': '叶子节点231', 'id': 231},
+                        {'name': '叶子节点232', 'id': 232},
+                        {'name': '叶子节点233', 'id': 233},
+                        {'name': '叶子节点234', 'id': 234}
+                    ]
+                }
+            ]
+        },
+        {'name': '父节点3 - 没有子节点', 'isParent': true}
+    ]"  type="text"  style="width:200px;"/>
 <script>
   /**
    *
@@ -126,24 +185,25 @@
     var $el = $('.app-demo1');
     var init = function () {
       $el.find('.zTreeMenu').zTreeMenu({
-         // data: data,
+          // data: data,
           setting: {
-             async: {
-               enable: true,
-               url: "data.json"
-             },
+            async: {
+              enable: true,
+              type: "get",
+              url: "data.json"
+            },
             callback: {
               onClick: function (e, treeId, treeNode) {
-               // console.log(e, treeId, treeNode)
+                // console.log(e, treeId, treeNode)
               }
             }
           },
-         // theme: 'user',
+          // theme: 'user',
           style: {'backgroundColor': '#f00'},
           selectCallback: function (data) {
             console.log(data)
           },
-         // console: 1
+          // console: 1
         }
       );
     }
@@ -219,6 +279,7 @@
           setting: {
             async: {
               enable: true,
+              type: "get",
               url: "data.json"
             },
             callback: {
