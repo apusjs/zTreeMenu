@@ -10,8 +10,8 @@
 <link rel="stylesheet" href="https://unpkg.com/perfect-scrollbar@0.8.1/dist/css/perfect-scrollbar.min.css" type="text/css">
 <script src="https://unpkg.com/perfect-scrollbar@0.8.1/dist/js/perfect-scrollbar.jquery.min.js"></script>
 
-<link rel="stylesheet" href="dist/zTreeMenu.css" type="text/css">
-<script src="dist/zTreeMenu.js"></script>
+<link rel="stylesheet" href="../dist/zTreeMenu.css" type="text/css">
+<script src="../dist/zTreeMenu.js"></script>
 <body>
 <div class="app-demo1" style="width: 300px;float: left; ">
   <button class="app-open">open</button>
@@ -42,71 +42,26 @@
 
 
 </div>
-<input data-init="zTreeMenu" data-source="[
-        {
-            'name': '父节点1 - 展开', 'open': true,
-            'children': [
-                {
-                    'name': '父节点11 - 折叠',
-                    'children': [
-                        {'name': '叶子节点111', 'id': 111},
-                        {'name': '叶子节点112', 'id': 112},
-                        {'name': '叶子节点113', 'id': 113},
-                        {'name': '叶子节点114', 'id': 114}
-                    ]
-                },
-                {
-                    'name': '父节点12 - 折叠',
-                    'children': [
-                        {'name': '叶子节点121', 'id': 121},
-                        {'name': '叶子节点122', 'id': 122},
-                        {'name': '叶子节点123', 'id': 123},
-                        {'name': '叶子节点124', 'id': 124}
-                    ]
-                },
-                {'name': '父节点13 - 没有子节点', 'isParent': true}
-            ]
-        },
-        {
-            'name': '父节点2 - 折叠',
-            'children': [
-                {
-                    'name': '父节点21 - 展开', 'open': true,
-                    'children': [
-                        {'name': '叶子节点211', 'id': 211},
-                        {'name': '叶子节点212', 'id': 212},
-                        {'name': '叶子节点213', 'id': 213},
-                        {'name': '叶子节点214', 'id': 214}
-                    ]
-                },
-                {
-                    'name': '父节点22 - 折叠',
-                    'children': [
-                        {'name': '叶子节点221', 'id': 221},
-                        {'name': '叶子节点222', 'id': 222},
-                        {'name': '叶子节点223', 'id': 223},
-                        {'name': '叶子节点224', 'id': 224}
-                    ]
-                },
-                {
-                    'name': '父节点23 - 折叠',
-                    'children': [
-                        {'name': '叶子节点231', 'id': 231},
-                        {'name': '叶子节点232', 'id': 232},
-                        {'name': '叶子节点233', 'id': 233},
-                        {'name': '叶子节点234', 'id': 234}
-                    ]
-                }
-            ]
-        },
-        {'name': '父节点3 - 没有子节点', 'isParent': true}
-    ]"  type="text"  style="width:200px;"/>
+
+<div class="app-demo3" style="width: 300px;float: left; ">
+  <button class="app-open">open</button>
+  <button class="app-update">update</button>
+  <button class="app-close">close</button>
+  <button class="app-data">data</button>
+  <button class="app-destroy">destroy</button>
+  <button class="app-init">init</button>
+  <button class="app-newval">new val</button>
+  <button class="app-nullval">null val</button>
+  <button class="app-getTreeObj">getTreeObj</button>
+
+  <input class="zTreeMenu" type="text" value="" style="width:200px;" fu="a.a()"/>
+</div>
+<input data-init="zTreeMenu" data-ajax-url="data.json" data-language="{'sEmptyTable': '使用新账号'}" type="text"  style="width:200px;"/>
 <script>
   /**
    *
    * @type {[null,null,null]}
    */
-  var a
   var data = [
     {
       name: "父节点1 - 展开", open: true,
@@ -167,15 +122,14 @@
     {name: "父节点3 - 没有子节点", isParent: true}
 
   ];
-  var demo1 = function ($el) {
-    var $demo1 = $('.app-demo1');
+  var demo1 = function () {
+    var $el = $('.app-demo1');
     var init = function () {
-      $demo1.find('.zTreeMenu').zTreeMenu({
+      $el.find('.zTreeMenu').zTreeMenu({
          // data: data,
           setting: {
              async: {
                enable: true,
-               type: "get",
                url: "data.json"
              },
             callback: {
@@ -195,61 +149,61 @@
     }
     init()
 
-    $demo1.find('.app-open').on('click', function () {
+    $el.find('.app-open').on('click', function () {
 
-      $demo1.find('.zTreeMenu').zTreeMenu('open')
+      $el.find('.zTreeMenu').zTreeMenu('open')
     })
-    $demo1.find('.app-update').on('click', function () {
+    $el.find('.app-update').on('click', function () {
 
-      $demo1.find('.zTreeMenu').zTreeMenu('update')
+      $el.find('.zTreeMenu').zTreeMenu('update')
     })
-    $demo1.find('.app-close').on('click', function () {
-      $demo1.find('.zTreeMenu').zTreeMenu('close')
+    $el.find('.app-close').on('click', function () {
+      $el.find('.zTreeMenu').zTreeMenu('close')
     })
-    $demo1.find('.app-data').on('click', function () {
-      console.log($demo1.find('.zTreeMenu').zTreeMenu('data'))
+    $el.find('.app-data').on('click', function () {
+      console.log($el.find('.zTreeMenu').zTreeMenu('data'))
     })
-    $demo1.find('.app-destroy').on('click', function () {
-      console.log($demo1.find('.zTreeMenu').zTreeMenu('destroy'))
+    $el.find('.app-destroy').on('click', function () {
+      console.log($el.find('.zTreeMenu').zTreeMenu('destroy'))
     })
-    $demo1.find('.app-init').on('click', function () {
+    $el.find('.app-init').on('click', function () {
       init()
     })
-    $demo1.find('.app-newval').on('click', function () {
-      $demo1.find('.zTreeMenu').data({
+    $el.find('.app-newval').on('click', function () {
+      $el.find('.zTreeMenu').data({
         data: [{id: 111}]
       }).trigger('change')
     })
-    $demo1.find('.app-nullval').on('click', function () {
-      $demo1.find('.zTreeMenu').data('data', null).trigger('change')
+    $el.find('.app-nullval').on('click', function () {
+      $el.find('.zTreeMenu').data('data', null).trigger('change')
     })
-    $demo1.find('.app-getTreeObj').on('click', function () {
-      var zTree = $demo1.find('.zTreeMenu').zTreeMenu('getTreeObj')
+    $el.find('.app-getTreeObj').on('click', function () {
+      var zTree = $el.find('.zTreeMenu').zTreeMenu('getTreeObj')
       console.log(zTree.getSelectedNodes())
     })
-    $demo1.find('.zTreeMenu').on('change', function () {
+    $el.find('.zTreeMenu').on('change', function () {
       console.log('zTreeMenu:change')
     })
-    $demo1.find('.zTreeMenu').on('zTreeMenu:close', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:close', function () {
       console.log('zTreeMenu:close')
     })
-    $demo1.find('.zTreeMenu').on('zTreeMenu:open', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:open', function () {
       console.log('zTreeMenu:open')
     })
 
-    $demo1.find('.zTreeMenu').on('zTreeMenu:select', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:select', function () {
       console.log('zTreeMenu:select')
     })
-    $demo1.find('.zTreeMenu').on('zTreeMenu:selecting', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:selecting', function () {
       console.log('zTreeMenu:selecting')
     })
 
   }()
 
   var demo2 = function () {
-    var $demo1 = $('.app-demo2');
+    var $el = $('.app-demo2');
     var init = function () {
-      $demo1.find('.zTreeMenu').zTreeMenu({
+      $el.find('.zTreeMenu').zTreeMenu({
         data: data,
         style: {wintd: 300, height: 500},
         selectCallback: function (nodes) {
@@ -260,13 +214,11 @@
     }
     init()
     var init = function () {
-      $demo1.find('.zTreeMenu').zTreeMenu({
+      $el.find('.zTreeMenu').zTreeMenu({
           // data: data,
           setting: {
             async: {
               enable: true,
-                type: "get",
-                data:'aaaa',
               url: "data.json"
             },
             callback: {
@@ -286,54 +238,119 @@
     }
     init()
 
-    $demo1.find('.app-open').on('click', function () {
+    $el.find('.app-open').on('click', function () {
 
-      $demo1.find('.zTreeMenu').zTreeMenu('open')
+      $el.find('.zTreeMenu').zTreeMenu('open')
     })
-    $demo1.find('.app-update').on('click', function () {
+    $el.find('.app-update').on('click', function () {
 
-      $demo1.find('.zTreeMenu').zTreeMenu('update')
+      $el.find('.zTreeMenu').zTreeMenu('update')
     })
-    $demo1.find('.app-close').on('click', function () {
-      $demo1.find('.zTreeMenu').zTreeMenu('close')
+    $el.find('.app-close').on('click', function () {
+      $el.find('.zTreeMenu').zTreeMenu('close')
     })
-    $demo1.find('.app-data').on('click', function () {
-      console.log($demo1.find('.zTreeMenu').zTreeMenu('data'))
+    $el.find('.app-data').on('click', function () {
+      console.log($el.find('.zTreeMenu').zTreeMenu('data'))
     })
-    $demo1.find('.app-destroy').on('click', function () {
-      console.log($demo1.find('.zTreeMenu').zTreeMenu('destroy'))
+    $el.find('.app-destroy').on('click', function () {
+      console.log($el.find('.zTreeMenu').zTreeMenu('destroy'))
     })
-    $demo1.find('.app-init').on('click', function () {
+    $el.find('.app-init').on('click', function () {
       init()
     })
-    $demo1.find('.app-newval').on('click', function () {
-      $demo1.find('.zTreeMenu').data({
+    $el.find('.app-newval').on('click', function () {
+      $el.find('.zTreeMenu').data({
         data: [{id: 111}]
       }).trigger('change')
     })
-    $demo1.find('.app-nullval').on('click', function () {
-      $demo1.find('.zTreeMenu').data('data', null).trigger('change')
+    $el.find('.app-nullval').on('click', function () {
+      $el.find('.zTreeMenu').data('data', null).trigger('change')
     })
-    $demo1.find('.app-getTreeObj').on('click', function () {
-      var zTree = $demo1.find('.zTreeMenu').zTreeMenu('getTreeObj')
+    $el.find('.app-getTreeObj').on('click', function () {
+      var zTree = $el.find('.zTreeMenu').zTreeMenu('getTreeObj')
       console.log(zTree.getSelectedNodes())
     })
-    $demo1.find('.zTreeMenu').on('change', function () {
+    $el.find('.zTreeMenu').on('change', function () {
       console.log('zTreeMenu:change')
     })
-    $demo1.find('.zTreeMenu').on('zTreeMenu:close', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:close', function () {
       console.log('zTreeMenu:close')
     })
-    $demo1.find('.zTreeMenu').on('zTreeMenu:open', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:open', function () {
       console.log('zTreeMenu:open')
     })
 
-    $demo1.find('.zTreeMenu').on('zTreeMenu:select', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:select', function () {
       console.log('zTreeMenu:select')
     })
-    $demo1.find('.zTreeMenu').on('zTreeMenu:selecting', function () {
+    $el.find('.zTreeMenu').on('zTreeMenu:selecting', function () {
       console.log('zTreeMenu:selecting')
     })
+  }()
+
+  var demo3 = function () {
+    var $el = $('.app-demo3');
+    var init = function () {
+      $el.find('.zTreeMenu').zTreeMenu({
+          data: data,
+          setting: {
+            check: {
+              enable: true
+            }
+          }
+        }
+      );
+    }()
+
+    $el.find('.app-open').on('click', function () {
+
+      $el.find('.zTreeMenu').zTreeMenu('open')
+    })
+    $el.find('.app-update').on('click', function () {
+
+      $el.find('.zTreeMenu').zTreeMenu('update')
+    })
+    $el.find('.app-close').on('click', function () {
+      $el.find('.zTreeMenu').zTreeMenu('close')
+    })
+    $el.find('.app-data').on('click', function () {
+      console.log($el.find('.zTreeMenu').zTreeMenu('data'))
+    })
+    $el.find('.app-destroy').on('click', function () {
+      console.log($el.find('.zTreeMenu').zTreeMenu('destroy'))
+    })
+    $el.find('.app-init').on('click', function () {
+      init()
+    })
+    $el.find('.app-newval').on('click', function () {
+      $el.find('.zTreeMenu').data({
+        data: [{id: 111}]
+      }).trigger('change')
+    })
+    $el.find('.app-nullval').on('click', function () {
+      $el.find('.zTreeMenu').data('data', null).trigger('change')
+    })
+    $el.find('.app-getTreeObj').on('click', function () {
+      var zTree = $el.find('.zTreeMenu').zTreeMenu('getTreeObj')
+      console.log(zTree.getSelectedNodes())
+    })
+    $el.find('.zTreeMenu').on('change', function () {
+      console.log('zTreeMenu:change')
+    })
+    $el.find('.zTreeMenu').on('zTreeMenu:close', function () {
+      console.log('zTreeMenu:close')
+    })
+    $el.find('.zTreeMenu').on('zTreeMenu:open', function () {
+      console.log('zTreeMenu:open')
+    })
+
+    $el.find('.zTreeMenu').on('zTreeMenu:select', function () {
+      console.log('zTreeMenu:select')
+    })
+    $el.find('.zTreeMenu').on('zTreeMenu:selecting', function () {
+      console.log('zTreeMenu:selecting')
+    })
+
   }()
 </script>
 </body>
