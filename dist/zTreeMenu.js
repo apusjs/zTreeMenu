@@ -24,7 +24,7 @@
         style: {},
         selectCallback: function () {
         },
-        console: 0,
+        console: 1,
         setting: {
           view: {
             dblClickExpand: false
@@ -186,12 +186,18 @@
         var $inputData = that.data() || [] //$el.data('data')
         var zTree = $.fn.zTree.getZTreeObj('tree-list-' + that.treeId);
         zTree.cancelSelectedNode() // 取消当前所有被选中节点的选中状态
+        var str = '';
+        var arr = []
         $.each($inputData || [], function (i, v) {
           var node = zTree.getNodeByParam("id", v.id);
-          zTree.selectNode(node, true); // 指定选中ID的节点
+          //zTree.selectNode(node, true); // 指定选中ID的节点
+          zTree.checkNode(node, true, true);
           zTree.expandNode(node, true, false); // 指定选中ID节点展开
-          that.$element.val(zTree.getSelectedNodes()[i].name).data('data', [zTree.getSelectedNodes()[i]]) // 显示配置节点name
+         // that.$element.val(zTree.getSelectedNodes()[i].name).data('data', [zTree.getSelectedNodes()[i]]) // 显示配置节点name
+          str += (str ? ',': '') + node.name
+          arr.push(node)
         })
+        that.$element.val('').val(str).data('data', arr)
         return this
       },
       // 表单域值改变时
@@ -210,10 +216,10 @@
             .trigger('zTreeMenu:selecting')
             .data('zTreeMenu')
             .selectNode.call(this)
-        } else if ($inputData === undefined || ($inputData && $inputData.length >= 0)) {
+        } else if ($inputData === undefined || ($inputData && $inputData.length >0 && $inputData[0].level >= 0)) {
           that.log('用户选择')
             .callback.call(this)
-        } else if (!that.$element.data('iSSearch') && $inputData && !$inputData[0].level) {
+        } else if (!that.$element.data('iSSearch') && $inputData && $inputData.length >0 && !$inputData[0].level) {
           that.log('配置')
             .selectNode.call(this)
         }
