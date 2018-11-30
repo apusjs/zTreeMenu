@@ -24,7 +24,7 @@
         style: {},
         selectCallback: function () {
         },
-        console: 1,
+        console: 0,
         setting: {
           view: {
             dblClickExpand: false
