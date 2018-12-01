@@ -1,17 +1,15 @@
 (function (window, document, undefined) {
 
   var factory = function ($) {
-    "use strict";
+    'use strict'
 
     function guid() {
       function S4() {
-        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
       }
-
-      return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+      return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
     }
 
-    /* Number */
     var Beautifier = function (element, options) {
       this.$element = element
       this.treeId = null
@@ -22,27 +20,16 @@
           sEmptyTable: '对不起，查询不到相关数据'
         },
         style: {},
-        selectCallback: function () {
-        },
+        selectCallback: function () {},
         console: 0,
-        setting: {
-          view: {
-            dblClickExpand: false
-          },
-          data: {
-            simpleData: {
-              enable: true
-            }
-          }
-        }
+        setting: {}
       }
       this.options = $.extend(true, {}, this.Defaults, options)
       return this.init()
-    };
+    }
     Beautifier.prototype = {
-      // 调试模式
       /**
-       *
+       * 调试模式
        * @param msg
        * @returns {null}
        */
@@ -83,7 +70,7 @@
              */
             onClick: function (e, treeId, treeNode) {
               if (!(that.options.setting && that.options.setting.check && that.options.setting.check.enable)) {
-                that.onClick(e, treeId, treeNode)
+                that.onCheck(e, treeId, treeNode)
               }
               if (that.options.setting && that.options.setting.callback && that.options.setting.callback.onClick && typeof that.options.setting.callback.onClick == 'function') {
                 that.options.setting.callback.onClick(that, e, treeId, treeNode)
@@ -106,23 +93,25 @@
         })
       },
       /**
-       * 用于捕获 checkbox / radio 被勾选 或 取消勾选的事件回调函数
+       * 用于捕获 checkbox / radio / 节点 被勾选 或 取消 或 点击 事件回调函数
        * @param treeId
        * @param treeNode
        */
       onCheck: function (e, treeId, treeNode) {
-        var that = this
         var zTree = $.fn.zTree.getZTreeObj(e.currentTarget.id)
         var nodes = zTree.getCheckedNodes()
-        var v = '';
-        nodes.sort(function compare(a, b) {
-          return a.id - b.id;
-        });
-        for (var i = 0, l = nodes.length; i < l; i++) {
-          v += nodes[i].name + ","
+        if(nodes.length === 0) {
+          nodes = zTree.getSelectedNodes()
         }
-        if (v.length > 0) v = v.substring(0, v.length - 1)
-        that.$element.val(v)
+        var val = ''
+        nodes.sort(function compare(a, b) {
+          return a.id - b.id
+        })
+        for (var i = 0, l = nodes.length; i < l; i++) {
+          val += nodes[i].name + ','
+        }
+        if (val.length > 0) val = val.substring(0, val.length - 1)
+        this.$element.val(val)
           .data({'data': nodes})
           .trigger('change')
         return this
@@ -133,94 +122,69 @@
        * @param treeNode
        */
       beforeClick: function (treeId, treeNode) {
-        var zTree = $.fn.zTree.getZTreeObj(treeId);
-        zTree.checkNode(treeNode, !treeNode.checked, null, true);
-        return false;
+        $.fn.zTree.getZTreeObj(treeId).checkNode(treeNode, !treeNode.checked, null, true)
+        return false
       },
       /**
-       * 节点点击
-       * @param e
-       * @param treeId
-       * @param treeNode
+       * 绑定搜索
        */
-      onClick: function (e, treeId, treeNode) {
-        var that = this
-        var zTree = $.fn.zTree.getZTreeObj(e.currentTarget.id)
-        var nodes = zTree.getSelectedNodes()
-        var v = '';
-        nodes.sort(function compare(a, b) {
-          return a.id - b.id;
-        });
-        for (var i = 0, l = nodes.length; i < l; i++) {
-          v += nodes[i].name + ","
-        }
-        if (v.length > 0) v = v.substring(0, v.length - 1)
-        that.$element.val(v)
-          .data({'data': nodes})
-          .trigger('change')
-        return this
-      },
-      // 绑定搜索
       onSearch: function () {
-        var that = this
-        that.log('onSearch')
+        this.log('onSearch')
           .treeRendering()
           .$element.removeData('data iSSearch')
-        var $inputVal = that.$element.val()
+        var $inputVal = this.$element.val()
         if ($inputVal.length > 0) {
-          var zTree = $.fn.zTree.getZTreeObj('tree-list-' + that.treeId)
-          var nodeList = zTree.getNodesByParamFuzzy("name", $inputVal);
+          var zTree = $.fn.zTree.getZTreeObj('tree-list-' + this.treeId)
+          var nodeList = zTree.getNodesByParamFuzzy('name', $inputVal)
           // 将找到的nodelist节点更新至Ztree内
           if (nodeList.length > 0) {
-            that.treeRendering(nodeList)
-            that.$element.data('iSSearch', true)
+            this.treeRendering(nodeList)
+            this.$element.data('iSSearch', true)
           } else {
-            $("#tree-list-" + that.treeId).html('<li class="no-results">' + that.options.language.sEmptyTable + '</li>')
+            $('#tree-list-' + this.treeId).html('<li class="no-results">' + this.options.language.sEmptyTable + '</li>')
           }
         }
         return this
       },
       // 选中当前值
       selectNode: function () {
-        var that = this
-        var $inputData = that.data() || [] //$el.data('data')
-        var zTree = $.fn.zTree.getZTreeObj('tree-list-' + that.treeId);
+        var $inputData = this.data() || []
+        var zTree = $.fn.zTree.getZTreeObj('tree-list-' + this.treeId)
         zTree.cancelSelectedNode() // 取消当前所有被选中节点的选中状态
-        var str = '';
-        var arr = []
+        var val = ''
+        var data = []
         $.each($inputData || [], function (i, v) {
-          var node = zTree.getNodeByParam("id", v.id);
-          //zTree.selectNode(node, true); // 指定选中ID的节点
-          zTree.checkNode(node, true, true);
-          zTree.expandNode(node, true, false); // 指定选中ID节点展开
-         // that.$element.val(zTree.getSelectedNodes()[i].name).data('data', [zTree.getSelectedNodes()[i]]) // 显示配置节点name
-          str += (str ? ',': '') + node.name
-          arr.push(node)
+          var node = zTree.getNodeByParam('id', v.id)
+          //zTree.selectNode(node, true) // 指定选中ID的节点
+          zTree.checkNode(node, true, true)
+          zTree.expandNode(node, true, false) // 指定选中ID节点展开
+          // that.$element.val(zTree.getSelectedNodes()[i].name).data('data', [zTree.getSelectedNodes()[i]]) // 显示配置节点name
+          val += (val ? ',': '') + node.name
+          data.push(node)
         })
-        that.$element.val('').val(str).data('data', arr)
+        this.$element.val('').val(val).data('data', data)
         return this
       },
       // 表单域值改变时
       onChange: function () {
-        var that = this
-        that.log('onChange')
-        if (that.$element.data('iSSearch')) {
-          that.log('搜索触发 onChange')
+        this.log('onChange')
+        if (this.$element.data('iSSearch')) {
+          this.log('搜索触发 onChange')
           return this
         }
-        var $inputData = that.data()
-        if ($inputData === null && !that.$element.data('iSSearch')) {
-          that.log('清空')
+        var $inputData = this.data()
+        if ($inputData === null && !this.$element.data('iSSearch')) {
+          this.log('清空')
             .$element.removeData('data')
             .val(null)
             .trigger('zTreeMenu:selecting')
             .data('zTreeMenu')
             .selectNode.call(this)
         } else if ($inputData === undefined || ($inputData && $inputData.length >0 && $inputData[0].level >= 0)) {
-          that.log('用户选择')
+          this.log('用户选择')
             .callback.call(this)
-        } else if (!that.$element.data('iSSearch') && $inputData && $inputData.length >0 && !$inputData[0].level) {
-          that.log('配置')
+        } else if (!this.$element.data('iSSearch') && $inputData && $inputData.length >0 && !$inputData[0].level) {
+          this.log('配置')
             .selectNode.call(this)
         }
         return this
@@ -266,16 +230,16 @@
           if (!that.options.style.height) {
             that.treeMenuContent.css({'height': 'auto'})
           }
-          $(document).on("mousedown", that.closeFn = function (event) {
+          $(document).on('mousedown', that.closeFn = function (event) {
             if ($(event.target).parents('.treeMenuContent').length < 1 && !($(event.target).data('treeId') && $(event.target).data('treeId') === that.treeId)) {
               that.close.call(that)
             }
-          });
+          })
           that.scrollbar.call(that)
           that.$element.trigger('zTreeMenu:open')
         })
         that.positioningSetInterval = window.setInterval(function () {
-          var tempCityOffset = that.$element.offset();
+          var tempCityOffset = that.$element.offset()
           if (cityOffset.left !== tempCityOffset.left || cityOffset.top !== tempCityOffset.top) {
             cityOffset = tempCityOffset
             positioning(tempCityOffset)
@@ -294,36 +258,34 @@
               .selectNode()
           }
           that.$element.trigger('zTreeMenu:close')
-          $(document).off("mousedown", that.closeFn)
+          $(document).off('mousedown', that.closeFn)
           window.clearInterval(that.positioningSetInterval)
         })
         return this
       },
       // 树更新
       update: function () {
-        var that = this
-        if (that.options.setting && that.options.setting.async && that.options.setting.async.enable) {
+        if (this.options.setting && this.options.setting.async && this.options.setting.async.enable) {
           this.options.data = null
         }
-        that.treeRendering()
+        this.treeRendering()
       },
       // 销毁菜单
       destroy: function () {
-        var that = this
-        that.$element.off('click', that.clickTempFn)
-          .off('change', that.onChangeTempFn)
-          .off('input propertychange', that.onSearchTempFn)
+        this.$element.off('click', this.clickTempFn)
+          .off('change', this.onChangeTempFn)
+          .off('input propertychange', this.onSearchTempFn)
           .val(null)
           .removeData('zTreeMenu')
-        that.treeMenuContent.remove()
+        this.treeMenuContent.remove()
         return this
       },
       // 渲染树DOM
       treeRendering: function (treeData) {
         if (this.options.data || treeData) {
-          $.fn.zTree.init($("#tree-list-" + this.treeId), this.setting(), treeData || this.options.data)
+          $.fn.zTree.init($('#tree-list-' + this.treeId), this.setting(), treeData || this.options.data)
         } else {
-          $.fn.zTree.init($("#tree-list-" + this.treeId), this.setting())
+          $.fn.zTree.init($('#tree-list-' + this.treeId), this.setting())
         }
         return this
       },
@@ -382,47 +344,45 @@
         }
         return this
       }
-    };
+    }
     // 向$.fn 添加属性
     if ($.fn.zTreeMenu == null) {
       // All methods that should return the element
-      var thisMethods = ['open', 'close', 'destroy'];
+      var thisMethods = ['open', 'close', 'destroy']
       $.fn.zTreeMenu = function (options) {
-        options = options || {};
+        options = options || {}
 
         if (typeof options === 'object') {
           this.each(function () {
-            var instanceOptions = $.extend(true, {}, options);
-
-            var instance = new Beautifier($(this), instanceOptions);
-          });
-
-          return this;
+            var instanceOptions = $.extend(true, {}, options)
+            var instance = new Beautifier($(this), instanceOptions)
+          })
+          return this
         } else if (typeof options === 'string') {
-          var ret;
-          var args = Array.prototype.slice.call(arguments, 1);
+          var ret
+          var args = Array.prototype.slice.call(arguments, 1)
 
           this.each(function () {
-            var instance = $(this).data('zTreeMenu');
+            var instance = $(this).data('zTreeMenu')
 
             if (instance == null && window.console && console.error) {
               console.error(
                 'The zTreeMenu(\'' + options + '\') method was called on an ' +
                 'element that is not using zTreeMenu.'
-              );
+              )
             }
 
-            ret = instance[options].apply(instance, args);
-          });
+            ret = instance[options].apply(instance, args)
+          })
 
           // Check if we should be returning `this`
           if ($.inArray(options, thisMethods) > -1) {
-            return this;
+            return this
           }
 
-          return ret;
+          return ret
         } else {
-          throw new Error('Invalid arguments for zTreeMenu: ' + options);
+          throw new Error('Invalid arguments for zTreeMenu: ' + options)
         }
       }
     }
@@ -430,20 +390,20 @@
     // data配置方法
     var zTreeMenuDataApi = function ($el) {
 
-      var dataList = ['setting', 'source', 'console', 'ajaxUrl', 'theme', 'style', 'language'];
+      var dataList = ['setting', 'source', 'console', 'ajaxUrl', 'theme', 'style', 'language']
 
       // 获取data配置对象
       var getData = function ($el, dL) {
-        var list = {}, dn, dv;
+        var list = {}, dn, dv
         for (var i = 0; i < dL.length; i++) {
-          dn = dL[i];
-          dv = $el.data(dn);
+          dn = dL[i]
+          dv = $el.data(dn)
           if (dv) {
-            list[dn === 'source' ? dn = 'data' : dn] = dv;
+            list[dn === 'source' ? dn = 'data' : dn] = dv
           }
         }
         return list
-      };
+      }
 
       // 处理data配置数据类型
       var dealData = function (oldList) {
@@ -451,35 +411,35 @@
         // 工具方法-转换成对象类型
         var toObject = function (dn, dv) {
           try {
-            return JSON.parse(dv.replace(/\'/g, '"'));
+            return JSON.parse(dv.replace(/\'/g, '"'))
           }
           catch (err) {
-            throw new Error("请配置正确的data-" + dn + "数据类型！")
+            throw new Error('请配置正确的data-' + dn + '数据类型！')
           }
-        };
+        }
 
         // 更新配置对象
 
         if (oldList.setting) {
-          oldList.setting = toObject('setting', oldList.setting);
+          oldList.setting = toObject('setting', oldList.setting)
         }
         if (oldList.data) {
-          oldList.data = toObject('data', oldList.data);
+          oldList.data = toObject('data', oldList.data)
         }
         if (oldList.style) {
-          oldList.style = toObject('style', oldList.style);
+          oldList.style = toObject('style', oldList.style)
         }
         if (oldList.language) {
-          oldList.language = toObject('language', oldList.language);
+          oldList.language = toObject('language', oldList.language)
         }
-        if (typeof oldList.theme !== 'string') delete oldList.theme;
-        if (typeof oldList.console !== 'number') delete oldList.console;
-        return oldList;
-      };
+        if (typeof oldList.theme !== 'string') delete oldList.theme
+        if (typeof oldList.console !== 'number') delete oldList.console
+        return oldList
+      }
 
       // 处理页面上的data-init树初始化对象
 
-      var options = dealData(getData($el, dataList));
+      var options = dealData(getData($el, dataList))
       // 调用树初始化方法
       $el.zTreeMenu($.extend(true, {}, options.ajaxUrl !== undefined ? {
         setting: {
@@ -488,40 +448,40 @@
             url: options.ajaxUrl
           }
         }
-      } : {}, options));
+      } : {}, options))
 
-      $el.data('init.ext.zTreeMenu.data-api', true);
-    };
+      $el.data('init.ext.zTreeMenu.data-api', true)
+    }
 
     //data初始化方法监听、执行
     $(document)
       .on('init.ext.zTreeMenu.data-api', '[data-init="zTreeMenu"]', function (e) {
-        var $this = $(this);
-        if ($this.data('init.ext.zTreeMenu.data-api')) return;
-        zTreeMenuDataApi($this);
+        var $this = $(this)
+        if ($this.data('init.ext.zTreeMenu.data-api')) return
+        zTreeMenuDataApi($this)
       })
       //AJAX停止事件
       .ajaxStop(function () {
-        $('[data-init="zTreeMenu"]').trigger("init.ext.zTreeMenu.data-api");
-      });
+        $('[data-init="zTreeMenu"]').trigger('init.ext.zTreeMenu.data-api')
+      })
     //页面初始化
     $(function () {
-      $('[data-init="zTreeMenu"]').trigger("init.ext.zTreeMenu.data-api");
-    });
+      $('[data-init="zTreeMenu"]').trigger('init.ext.zTreeMenu.data-api')
+    })
 
-  }; // /factory
+  } // /factory
 
 // Define as an AMD module if possible
   if (typeof define === 'function' && define.amd) {
-    define(['jquery', 'zTree', 'perfectScrollbar'], factory);
+    define(['jquery', 'zTree', 'perfectScrollbar'], factory)
   }
   else if (typeof exports === 'object') {
     // Node/CommonJS
-    factory(require('jquery'), require('zTree'), require('perfectScrollbar'));
+    factory(require('jquery'), require('zTree'), require('perfectScrollbar'))
   }
   else if (jQuery) {
     // Otherwise simply initialise as normal, stopping multiple evaluation
-    factory(jQuery);
+    factory(jQuery)
   }
-})(window, document);
+})(window, document)
 
