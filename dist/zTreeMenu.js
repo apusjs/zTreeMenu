@@ -150,15 +150,15 @@
       selectNode: function () {
         var $inputData = this.data() || []
         var zTree = $.fn.zTree.getZTreeObj('tree-list-' + this.treeId)
-        zTree.cancelSelectedNode() // 取消当前所有被选中节点的选中状态
+        zTree.cancelSelectedNode() // 取消节点的选中状态
+        zTree.checkAllNodes(false); //  取消全部节点勾选
         var val = ''
         var data = []
         $.each($inputData || [], function (i, v) {
           var node = zTree.getNodeByParam('id', v.id)
-          //zTree.selectNode(node, true) // 指定选中ID的节点
-          zTree.checkNode(node, true, true)
-          zTree.expandNode(node, true, false) // 指定选中ID节点展开
-          // that.$element.val(zTree.getSelectedNodes()[i].name).data('data', [zTree.getSelectedNodes()[i]]) // 显示配置节点name
+          zTree.selectNode(node, true) // 选中指定节点
+          zTree.checkNode(node, true, true) // 勾选 单个节点
+          zTree.expandNode(node, true, false) // 展开 指定的节点
           val += (val ? ',': '') + node.name
           data.push(node)
         })
