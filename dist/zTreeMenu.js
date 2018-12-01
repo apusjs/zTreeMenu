@@ -70,7 +70,7 @@
              */
             onClick: function (e, treeId, treeNode) {
               if (!(that.options.setting && that.options.setting.check && that.options.setting.check.enable)) {
-                that.onClick(e, treeId, treeNode)
+                that.onCheck(e, treeId, treeNode)
               }
               if (that.options.setting && that.options.setting.callback && that.options.setting.callback.onClick && typeof that.options.setting.callback.onClick == 'function') {
                 that.options.setting.callback.onClick(that, e, treeId, treeNode)
@@ -93,13 +93,16 @@
         })
       },
       /**
-       * 用于捕获 checkbox / radio 被勾选 或 取消勾选的事件回调函数
+       * 用于捕获 checkbox / radio / 节点 被勾选 或 取消 或 点击 事件回调函数
        * @param treeId
        * @param treeNode
        */
       onCheck: function (e, treeId, treeNode) {
         var zTree = $.fn.zTree.getZTreeObj(e.currentTarget.id)
         var nodes = zTree.getCheckedNodes()
+        if(nodes.length === 0) {
+          nodes = zTree.getSelectedNodes()
+        }
         var val = ''
         nodes.sort(function compare(a, b) {
           return a.id - b.id
@@ -123,28 +126,8 @@
         return false
       },
       /**
-       * 节点点击
-       * @param e
-       * @param treeId
-       * @param treeNode
+       * 绑定搜索
        */
-      onClick: function (e, treeId, treeNode) {
-        var zTree = $.fn.zTree.getZTreeObj(e.currentTarget.id)
-        var nodes = zTree.getSelectedNodes()
-        var val = ''
-        nodes.sort(function compare(a, b) {
-          return a.id - b.id
-        })
-        for (var i = 0, l = nodes.length; i < l; i++) {
-          val += nodes[i].name + ','
-        }
-        if (val.length > 0) val = val.substring(0, val.length - 1)
-        this.$element.val(val)
-          .data({'data': nodes})
-          .trigger('change')
-        return this
-      },
-      // 绑定搜索
       onSearch: function () {
         this.log('onSearch')
           .treeRendering()
@@ -167,15 +150,15 @@
       selectNode: function () {
         var $inputData = this.data() || []
         var zTree = $.fn.zTree.getZTreeObj('tree-list-' + this.treeId)
-        zTree.cancelSelectedNode() // 取消当前所有被选中节点的选中状态
+        zTree.cancelSelectedNode() // 取消节点的选中状态
+        zTree.checkAllNodes(false); //  取消全部节点勾选
         var val = ''
         var data = []
-        $.each($inputData || [], function (i, v) {
+        $.each($inputData, function (i, v) {
           var node = zTree.getNodeByParam('id', v.id)
-          //zTree.selectNode(node, true) // 指定选中ID的节点
-          zTree.checkNode(node, true, true)
-          zTree.expandNode(node, true, false) // 指定选中ID节点展开
-         // that.$element.val(zTree.getSelectedNodes()[i].name).data('data', [zTree.getSelectedNodes()[i]]) // 显示配置节点name
+          zTree.selectNode(node, true) // 选中指定节点
+          zTree.checkNode(node, true, true) // 勾选 单个节点
+          zTree.expandNode(node, true, false) // 展开 指定的节点
           val += (val ? ',': '') + node.name
           data.push(node)
         })
