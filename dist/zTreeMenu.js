@@ -154,7 +154,7 @@
         zTree.checkAllNodes(false); //  取消全部节点勾选
         var val = ''
         var data = []
-        $.each($inputData || [], function (i, v) {
+        $.each($inputData, function (i, v) {
           var node = zTree.getNodeByParam('id', v.id)
           zTree.selectNode(node, true) // 选中指定节点
           zTree.checkNode(node, true, true) // 勾选 单个节点
